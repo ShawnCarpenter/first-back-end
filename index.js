@@ -7,6 +7,17 @@ app.use(cors());
 const  geoData  = require('./data/geo') 
 const weatherData = require('./data/weather')
 
+app.get('/', (req, res) => {
+    try{
+        
+        res.send(`<h1>This is an API endpoint</h1>
+            <p> To see location data use <a href="https://city-explorer-sjc.herokuapp.com/location">https://city-explorer-sjc.herokuapp.com/location</a></p>
+            <p> To see weather data use <a href="https://city-explorer-sjc.herokuapp.com/weather">https://city-explorer-sjc.herokuapp.com/weather</a></p>`);
+    } catch(e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 function getLatLong(cityName){
     //TODO: Replace hardcoded data with API call.
     const city= geoData[0];
