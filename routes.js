@@ -17,7 +17,7 @@ const {
 app.get('/', (req, res) => {
     try{ 
         res.send(`<h1>This is an API endpoint</h1>
-            <p> To see location data use <a href="https://city-explorer-sjc.herokuapp.com/location">https://city-explorer-sjc.herokuapp.com/location</a></p>
+            <p> To see location data use <a href="https://city-explorer-sjc.herokuapp.com/location?search=portland">https://city-explorer-sjc.herokuapp.com/location?search=portland</a></p>
             <p> To see weather data use <a href="https://city-explorer-sjc.herokuapp.com/weather">https://city-explorer-sjc.herokuapp.com/weather</a></p>`);
     } catch(e) {
         res.status(500).json({ error: e.message });
@@ -47,9 +47,11 @@ app.get('/location', async (req, res) => {
     }
 });
 
-function getWeather(lat, lon){
-    //TODO: replace hardcoded data with API call.
-    const data = weatherData.data;
+async function getWeather(lat, lon){
+    
+    const response = await request.get(`https://api.weatherbit.io/v2.0/forecast/daily?&lat=${lat}&lon=${lon}&key=${WEATHER_API_KEY}`)
+
+    const data = response.body.data;
     return data.map(weatherItem => {
         return {
             forecast: weatherItem.weather.description,
@@ -58,11 +60,11 @@ function getWeather(lat, lon){
     });
 }
 
-app.get('/weather', (req, res) => {
+app.get('/weather', async (req, res) => {
   try{
      const userLat = req.query.latitude;
      const userLon = req.query.longitude;
-     const mungedData = getWeather(userLat, userLon)
+     const mungedData = await getWeather(userLat, userLon)
      res.json(mungedData)
 
   } catch(e) {
