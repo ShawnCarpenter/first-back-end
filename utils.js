@@ -60,6 +60,5 @@ module.exports = {
     getTrails,
     getLatLong,
     getWeather
-
 }
 // exports.getTrails = getTrails;
